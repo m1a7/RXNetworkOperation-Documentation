@@ -1,0 +1,11 @@
+[[DTO GET: urlToJSON withDownloadProgress:^(DTO* op,DTODownProgress p) {
+
+  NSLog(@“Progress = %f”, (float)p.countOfBytesReceived/p.countOfBytesExpectedToReceive);        
+} withCompletion:^(RXDataTaskOperation *op, NSError *error) {
+        
+        NSError* errorConvertJSON;
+        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:op.receivedData 
+							    options:kNilOptions 
+							       error:&errorConvertJSON];
+    	NSLog(@“Response: %@”, json);    
+}] start];

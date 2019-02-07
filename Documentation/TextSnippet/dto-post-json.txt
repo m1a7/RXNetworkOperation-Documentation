@@ -1,0 +1,21 @@
+    NSString* pathToJSON     = [[NSBundle mainBundle] pathForResource:@"cache" ofType:@"json"];
+    NSData*   jsonData       = [NSData dataWithContentsOfFile:pathToJSON];
+    NSString* jsonDataBase64 = [jsonData base64EncodedStringWithOptions:0];
+    NSDictionary* paramsForDataTaskPost_Json_OP = @{@"data": jsonDataBase64};
+    
+   [[DTO POST:@"https://httpbin.org/post" withParams:paramsForDataTaskPost_Json_OP
+                       withUploadProgress:^(DTO *op, DTOUpProgress p) {
+
+      NSLog(@“Progress Upload: %f”, (float)p.totalBytesSent/p.totalBytesExpectedToSend);
+                           
+   } withDownloadProgress:^(DTO *op, DTODownProgress p) {
+      NSLog(@“Progress Download: %f”, (float)p.countOfBytesReceived/p.countOfBytesExpectedToReceive);            
+	                           
+   } withCompletion:^(DTO *op, NSError *error) {
+
+        NSError* errorConvertServerDataToJson;
+        NSDictionary* serverJson = [NSJSONSerialization JSONObjectWithData:op.receivedData 
+								   options:kNilOptions
+								     error:&errorConvertServerDataToJson];                           
+        NSLog(@“Response: %@”, json);    
+   }] start];

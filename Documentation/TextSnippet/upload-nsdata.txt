@@ -1,0 +1,9 @@
+[[UploadOP uploadTo:@"https://httpbin.org/post"
+                                     data:postGifDataToUpload
+                             withProgress:^(RXUploadOperation* op, UOUpProgress p){
+       
+  NSLog(@“Progress: %@”,(float)p.totalBytesSent/p.totalBytesExpectedToSend);                                                
+ }   withCompletion:^(RXUploadOperation* op, NSError* error){
+                              
+ NSLog(@“operation is completion”);                               
+ }] start];

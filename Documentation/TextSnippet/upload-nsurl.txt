@@ -1,0 +1,12 @@
+NSURL *urlToFile = [[NSBundle mainBundle] URLForResource:@"Auslogics_BoostSpeed_10.0.2.0" withExtension:@"zip"];
+    
+[[UploadOP uploadTo:@"https://httpbin.org/post"
+                                 localURL:urlToFile
+                             withProgress:^(RXUploadOperation* op, UOUpProgress p){
+                            
+  NSLog(@“Progress: %@”,(float)p.totalBytesSent/p.totalBytesExpectedToSend);      
+
+ }  withCompletion:^(RXUploadOperation* op, NSError* error){
+                               
+	 NSLog(@“operation is completion”);         
+}] start];

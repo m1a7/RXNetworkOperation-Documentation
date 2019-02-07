@@ -1,0 +1,16 @@
+ NSString* pathToPngToUpload = [[NSBundle mainBundle] pathForResource:@"pngPicture" ofType:@"png"];
+ NSData*   pngDataToUpload   = [NSData dataWithContentsOfFile:pathToPngToUpload];
+ NSString* pngStrBase64      = [pngDataToUpload base64EncodedStringWithOptions:0];
+    
+    
+     [[UO uploadTo:@"https://httpbin.org/post"
+                         withParams:@{@"data" : pngStrBase64,
+                                      @"operation" : @"uploadPngOP(params-flow)" }
+                       withProgress:^(UO *op, UOUpProgress p){
+
+     NSLog(@“Progress: %@”,(float)p.totalBytesSent/p.totalBytesExpectedToSend);                   
+     
+  }withCompletion:^(UO *op, NSError *error) {
+    	                     
+    	NSLog(@“operation is completion”);
+    }] start];
