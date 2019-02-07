@@ -135,7 +135,7 @@ If you want to explore the work of the framework in more detail, go to our Wiki.
 
 <img src="Documentation/collageOfWiki.png" width="600" >
 
---
+
 <br>
 
 ## Сode snippets:
