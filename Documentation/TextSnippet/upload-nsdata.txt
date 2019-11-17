@@ -1,9 +1,24 @@
-[[UploadOP uploadTo:@"https://httpbin.org/post"
-                                     data:postGifDataToUpload
-                             withProgress:^(RXUploadOperation* op, UOUpProgress p){
-       
-  NSLog(@“Progress: %@”,(float)p.totalBytesSent/p.totalBytesExpectedToSend);                                                
- }   withCompletion:^(RXUploadOperation* op, NSError* error){
-                              
- NSLog(@“operation is completion”);                               
- }] start];
+NSString* url = @"https://httpbin.org/post";
+NSString* pathToGifToUpload    = [[NSBundle mainBundle] pathForResource:@"pic" ofType:@"gif"];
+NSData*   gifDataToUpload      = [NSData dataWithContentsOfFile:pathToGifToUpload];
+NSData* gifStrBase64ToUpload   = [gifDataToUpload base64EncodedDataWithOptions:0];
+
+NSDictionary* postGifJsonToUpload = @{ @"data"      : gifStrBase64ToUpload,
+                                       @"operation" : @"uploadGifOP(data-flow)"
+                                     };
+
+NSError* errorCreateingDataFromJSONToUpload;
+NSData* postGifDataToUpload = [NSJSONSerialization dataWithJSONObject:postGifJsonToUpload
+                                                              options:0
+                                                                error:&errorCreateingDataFromJSONToUpload];
+
+
+[[UploadOP uploadTo:url data:postGifDataToUpload  withProgress:^(UO* op, UOUpProgress p){
+           
+   NSLog(@"Progress: %f",(float)p.totalBytesSent/p.totalBytesExpectedToSend);
+} withCompletion:^(UO* op, NSError* error){
+   
+   NSLog(@"operation is completion");
+   [op releaseRetainedOperation];
+   
+}] retainOperationAndStart];

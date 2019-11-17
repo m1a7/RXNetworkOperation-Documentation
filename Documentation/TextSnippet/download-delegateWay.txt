@@ -1,0 +1,31 @@
+// Creating the operation
+self.downloadPngOP = [DO GET:png withSessionDelegate:self];
+
+#pragma mark - <NSURLSessionDownloadDelegate>
+
+/*--------------------------------------------------------------------------------------------------------------
+ Introduction: (didFinishDownloadingToURL:) provides a local NSURL to the downloaded file.
+ --------------------------------------------------------------------------------------------------------------*/
+
+- (void)URLSession:(NSURLSession*)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL*)location
+{
+    RXNO_DownloadOperation* operation = (RXNO_DownloadOperation*)
+    [RXNO_InternalSessionDelegate retrieveOperationWhichUsesSession:session whichHasTask:downloadTask];
+    
+    // Implementation of writing file from temporary direction to permanent....     
+}
+
+/*--------------------------------------------------------------------------------------------------------------
+ Introduction: (didWriteData:) displays download progress.
+ --------------------------------------------------------------------------------------------------------------*/
+
+- (void)URLSession:(NSURLSession*)session  downloadTask:(NSURLSessionDownloadTask*)downloadTask
+                                           didWriteData:(int64_t)bytesWritten
+                                      totalBytesWritten:(int64_t)totalBytesWritten
+                              totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+{
+    RXNO_DownloadOperation* operation = (RXNO_DownloadOperation*)
+   [RXNO_InternalSessionDelegate retrieveOperationWhichUsesSession:session whichHasTask:downloadTask];
+ 
+    NSLog(@"Down progress = %f",(float)p.totalBytesWritten/p.totalBytesExpectedToWrite);
+}

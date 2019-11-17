@@ -1,0 +1,13 @@
+[[DTO GET:url withCompletion:^(DTO *op, NSError *error) {
+        
+    if (op.state == RXNO_SuccessFinished){
+        NSError* parseError;
+        NSDictionary* json = [NSJSONSerialization JSONObjectWithData:op.receivedData
+                                                             options:kNilOptions
+                                                               error:&parseError];
+        NSLog(@"json = %@", json);
+    }else{
+        NSLog(@"Error: %@\nState: %@",error, [op stateDescription]);
+    }
+    [op releaseRetainedOperation];
+}] retainOperationAndStart];

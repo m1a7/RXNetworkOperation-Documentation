@@ -1,16 +1,19 @@
- NSString* pathToPngToUpload = [[NSBundle mainBundle] pathForResource:@"pngPicture" ofType:@"png"];
- NSData*   pngDataToUpload   = [NSData dataWithContentsOfFile:pathToPngToUpload];
- NSString* pngStrBase64      = [pngDataToUpload base64EncodedStringWithOptions:0];
-    
-    
-     [[UO uploadTo:@"https://httpbin.org/post"
-                         withParams:@{@"data" : pngStrBase64,
-                                      @"operation" : @"uploadPngOP(params-flow)" }
-                       withProgress:^(UO *op, UOUpProgress p){
+NSString *documentsPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+NSLog(@"Path to documetns: %@",documentsPath);
 
-     NSLog(@“Progress: %@”,(float)p.totalBytesSent/p.totalBytesExpectedToSend);                   
+NSString* url = @"https://httpbin.org/post";
+NSString* pathToPngToUpload = [[NSBundle mainBundle] pathForResource:@"pngPicture" ofType:@"png"];
+NSData*   pngDataToUpload   = [NSData dataWithContentsOfFile:pathToPngToUpload];
+NSString* pngStrBase64      = [pngDataToUpload base64EncodedStringWithOptions:0];
+NSDictionary*   params      = @{@"data"      : pngStrBase64,
+                                @"operation" : @"uploadPngOP(params-flow)" };    
+
+[[UO uploadTo:url  withParams:params withProgress:^(UO *op, UOUpProgress p){
      
-  }withCompletion:^(UO *op, NSError *error) {
-    	                     
-    	NSLog(@“operation is completion”);
-    }] start];
+     NSLog(@"Progress: %f",(float)p.totalBytesSent/p.totalBytesExpectedToSend);
+     
+} withCompletion:^(UO *op, NSError *error) {
+     
+     NSLog(@"operation is completion");
+     [op releaseRetainedOperation];
+}] retainOperationAndStart];

@@ -1,9 +1,10 @@
 [[DTO GET:urlToPicture withDownloadProgress:^(DTO* op,DTODownProgress p) {
-        
-  NSLog(@“Progress = %f”, (float)p.countOfBytesReceived/p.countOfBytesExpectedToReceive);     
-} withCompletion:^(RXDataTaskOperation *op, NSError *error) {
-
-	if (op.state == RXBOSussessFinished){
-	     UIImage*  image = [[UIImage alloc]initWithData: op.receivedData];
-	}        
-}] start];
+    
+    NSLog(@"Progress = %f", (float)p.countOfBytesReceived/p.countOfBytesExpectedToReceive);
+} withCompletion:^(DTO *op, NSError *error) {
+    
+    if (op.state == RXNO_SuccessFinished){
+        UIImage*  image = [[UIImage alloc]initWithData: op.receivedData];
+    }
+    [op releaseRetainedOperation];
+}] retainOperationAndStart];

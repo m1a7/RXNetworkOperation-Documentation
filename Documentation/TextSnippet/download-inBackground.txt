@@ -1,0 +1,41 @@
+// (The First Step) - Create private session and operation
+
+// An example of how you can set a custom session for an operation
+NSURLSessionConfiguration* privateConfig =
+[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"private.backgroundConfig"];
+privateConfig.timeoutIntervalForRequest  = 60;
+privateConfig.timeoutIntervalForResource = 1000;
+privateConfig.URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+privateConfig.URLCredentialStorage = [NSURLCredentialStorage sharedCredentialStorage];
+privateConfig.requestCachePolicy   = NSURLRequestReloadIgnoringLocalCacheData;
+privateConfig.discretionary        = YES;
+
+// Be SURE to pass the 'RXNO_BaseOperation.internal_delegate' to the 'delegate' parameter
+NSURLSession* privateSession = [NSURLSession sessionWithConfiguration:privateConfig
+                                                             delegate:RXNO_BaseOperation.internal_delegate
+                                                        delegateQueue:nil];
+self.downloadPngOP = 
+[DO GET:png withParams:nil withProgress:^(DO* op, DODownProgress p){
+    
+    NSLog(@"Down progress = %f",(float)p.totalBytesWritten/p.totalBytesExpectedToWrite);    
+
+} withCompletion:^(DO* operation, NSError* error){
+    
+   // Implementation of writing to a permanent directory..
+}];
+
+// Do not forget to set the private session value of the operation
+self.downloadPngOP.privateSession = privateSession;
+[self.downloadPngOP start];
+
+
+// (The Second Step) - Override method in AppDelegate
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
+                                                                   completionHandler:(void (^)(void))completionHandler
+{
+    if (identifier.length > 0){
+        [RXNO_BaseOperation.backgroundCompletions setObject:[completionHandler copy] forKey:identifier];
+    }
+}
+
