@@ -33,11 +33,7 @@
   - [RXNO_UploadOperation]()
 
     - [Upload By Params (NSDictionary)](#upload-by-params-(nsdictionary))
-      
-      
-
     - [Upload By Data (NSData)](#upload-by-data-(nsdata))
-
     - [Upload By Local URL (NSURL)](#upload-by-local-url-(nsurl))
 
   - [RXNO_DownloadOperation]()
@@ -106,14 +102,13 @@ Since all of our `DO`/`UO`/`DTO` classes are modified inheritors of `NSOperation
 
 4) ```-(void) cancel```    - cancels the operation. (After calling this method, you cannot resume execution.) <br>
 
-5) ` -(void) retainOperationAndStart` - Call this if you do not have a strong reference to the operation object.
+5) ``` -(void) retainOperationAndStart``` - Call this if you do not have a strong reference to the operation object.
+                                            The operation will be added to the internal dictionary 
+                                            (in order to retain in memory) and will start its execution.
 
-                                                                         The operation will be added to the internal dictionary (in order to retain in 
-                                                                         memory) and will start its execution.
-
-6) `-(void) releaseRetainedOperation`- If you previously called the 'retainOperationAndStart' method and the 
-                                                                            operation was added to the internal dictionary. 
-                                                                            Be sure to call this method to remove the operation from memory.
+6) ```-(void) releaseRetainedOperation```- If you previously called the 'retainOperationAndStart' method and the 
+                                           operation was added to the internal dictionary. 
+                                           Be sure to call this method to remove the operation from memory.
 
 All operations are created on the principle of  
 
