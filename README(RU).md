@@ -137,6 +137,7 @@
 #### Загрузка json  <a name="paragraph8"></a>
 
 <br>
+
 [Copy code](Documenation/CodeSnippets/snippet1.txt)
 
 ![](Documenation/CarbonScreen/img3.png)
@@ -146,6 +147,7 @@
 #### Загрузка изображения  <a name="paragraph9"></a>
 
 <br> 
+
 [Copy code](Documenation/CodeSnippets/snippet2.txt)
 
 ![](Documenation/CarbonScreen/img4.png)
@@ -157,6 +159,7 @@
 #### Конвертирование изображения в бинарный код и выгрузка на сервер как NSDictionary  <a name="paragraph11"></a>
 
 <br>
+
 [Copy code](Documenation/CodeSnippets/snippet3.txt)
 
 ![](Documenation/CarbonScreen/img5.png)
@@ -261,6 +264,7 @@ NSURLSession* privateSession =
 Что позволит вам  в дальнейшем проверять истекла ли эта дата, перед запуском очередной операции.<br>
 
 Подобная практика может быть полезной не только для табличных представлений, а также и для обычных кнопок, после нажатия которых оправляется некий запрос на сервер.<br><br>Подобный механизм ограждает пользователя от случайной отправки запроса несколько раз подряд, а также снижает нагрузку на сервер, если приложением пользуется большое количество пользователей.<br><br>
+
 [Copy code](Documenation/CodeSnippets/snippet8.txt)
 
 ![](Documenation/CarbonScreen/img11.png) 
