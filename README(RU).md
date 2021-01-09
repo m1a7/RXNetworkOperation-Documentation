@@ -485,7 +485,7 @@ NSURLSession* privateSession =
 
 ## Дополнительно <a name="paragraph29"></a>
 
-[🇬🇧 English Readme](https://github.com/m1a7/RXNetworkOperation-Documentation/README.md) <br>
+[🇬🇧 English Readme](https://github.com/m1a7/RXNetworkOperation-Documentation) <br>
 
 ## Автор <a name="paragraph30"></a>
 
