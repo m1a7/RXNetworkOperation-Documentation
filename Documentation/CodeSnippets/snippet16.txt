@@ -1,0 +1,30 @@
+
+- (GO*) getAllMusicProgressCancellation:(ProgressCancellation)progressCancellation
+{
+    GO* go = [GO groupOperation:^(GO * _Nonnull groupOp) {
+    
+        void (^universalProgress)(DTO*, DTODownProgress) = ^(DTO* op, DTODownProgress p){
+            if (groupOp.state == RXNO_Cancelled) [op cancel];
+            if (progressCancellation) progressCancellation(groupOp);
+        };
+    
+        DTO* op1 = [[DTO GET:url1 downloadProgress:universalProgress] syncStart];
+        NSLog(@"op1: %@",[op1 stateDescription]);
+        
+        if (groupOp.state == RXNO_Cancelled) return;
+        
+        DTO* op2 = [[DTO GET:url2 downloadProgress:universalProgress] syncStart];
+        NSLog(@"op2: %@",[op2 stateDescription]);
+        
+        groupOp.result   = @[op1.receivedData, op2.receivedData];
+        group.resultClass = NSStringFromClass(NSArray.class);
+    }];
+    
+    go.owner = [BO addressInMemory:self];
+    return go;
+}
+     
+ - (GO*) getAllVideoProgressCancellation:(ProgressCancellation)progressCancellation
+ {
+    ...   
+ }

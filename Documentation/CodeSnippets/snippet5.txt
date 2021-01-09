@@ -1,0 +1,13 @@
+
+
+NSString*   url = @"https://httpbin.org/post";
+NSURL* localURL = [[NSBundle mainBundle] URLForResource:@"Archive" withExtension:@"zip"];
+
+[[UO uploadTo:url localURL:localURL progress:^(UO * _Nonnull op, UOUpProgress p) {
+    NSLog(@"progress uploading: %f",p.percentProgress);
+
+} completion:^(UO * _Nonnull op, NSError * _Nullable error) {
+    if (op.state == RXNO_SuccessFinished){
+        NSLog(@"Object successed uploaded!");
+    }
+}] retainOperationAndStart];

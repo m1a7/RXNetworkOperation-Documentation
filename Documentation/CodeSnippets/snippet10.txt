@@ -1,0 +1,23 @@
+
++ (DTO*) usersGet:(NSArray<NSString*>*)userIDs
+           fields:(NSArray<NSString*>* _Nullable)fields
+       completion:(nullable void(^)(NSArray<UserProfile*>* _Nullable userProfiles, BO* op))completion
+{
+    // NetworkRequestConstructor
+    NSURLRequest* request = [NetworkRequestConstructor buildRequestForMethod_UsersGet:userIDs
+                                                                               fields:fields
+                                                                             nameCase:nil];
+    // NetworkOpeation
+     DTO* netOp =
+    [DTO request:request uploadProgress:nil downloadProgress:nil completion:^(DTO * _Nonnull op, NSError * _Nullable error) {
+       
+        // Check on 401 and other server's error
+        if ([APIManager checkOnServerAndOtherError:op apiMethodCompletion:completion]){
+            return;
+        }
+        ...    
+        // Call completion
+        if (completion) completion(userProfiles,op);
+    }];
+    return netOp;
+}

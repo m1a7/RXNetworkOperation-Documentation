@@ -1,0 +1,24 @@
+ 
+
+ - (GO*) getAllMediaContent:(ProgressCancellation)progressCancellation
+ {
+ 
+     __block GroupOperation* group =  [GroupOperation groupProgressDescription:nil
+                                                                 progressCount:nil
+                                                          progressCancellation:nil
+                                                               executableBlock:^(GO * _Nonnull mainGroupOp){
+ 
+        void (^universalProgressCancellation)(GO*) = ^(GO* groupOperation){
+            //⚠️ Keeps track of the "upper" operation, if it was canceled, then cancels itself
+            if (mainGroupOp.state == RXNO_Cancelled){ [groupOperation cancel]; }
+        };
+        
+        GO* musicOperation = [weak getAllMusicProgressCancellation:universalProgressCancellation];
+        ...
+ 
+        GO* videoOperation = [weak getAllVideoProgressCancellation:universalProgressCancellation];
+        ....
+     }];
+    ... 
+    return go;
+ }  

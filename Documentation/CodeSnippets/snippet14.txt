@@ -1,0 +1,26 @@
+
+GO* go = [GO groupOperation:^(GO * _Nonnull groupOp) {
+
+      NSString* url1 = @"https://sun9-69.userapi.com/c543109/v543109969/2fd87/UVRT5x9dSGM.jpg";
+      NSString* url2 = @"https://sun9-71.userapi.com/c7002/v7002057/3cc0e/mS05pL0JMAg.jpg";
+     
+      DTO* op1 = [DTO GET:url1];
+      op1.downloadProgress = ^(DTO * _Nonnull op, DTODownProgress p) {
+          if (groupOp.state == RXNO_Cancelled) [op cancel];
+      };
+      [op1 syncStart];
+      NSLog(@"op1: %@",[op1 stateDescription]);
+      if (groupOp.state == RXNO_Cancelled) return;
+
+      DTO* op2 = [DTO GET:url2];
+      op2.downloadProgress = ^(DTO * _Nonnull op, DTODownProgress p) {
+          if (groupOp.state == RXNO_Cancelled) [op cancel];
+      };
+      [op2 syncStart];
+      NSLog(@"op2: %@",[op2 stateDescription]);
+    
+      groupOp.result   = @[op1.receivedData, op2.receivedData];
+      group.resultClass = NSStringFromClass(NSArray.class);
+  }];
+  go.owner = [BO addressInMemory:self];
+  [self.queue addOperation:go];

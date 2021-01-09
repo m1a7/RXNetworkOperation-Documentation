@@ -1,0 +1,14 @@
+ 
+
+ GO* go =
+[GO groupOperation:^(GO * _Nonnull groupOp) {
+
+    DTO* getUsersAlbums = [[DTO GET:url1] syncStart];
+
+    NSArray<NSNumber*>* albums = getUsersAlbums.json[@"albums"];
+
+    DTO* getAllUsersMusic = [[DTO GET:url2 params:@{@"albums":albums}] syncStart];
+
+    [weak.array addObjects:getAllUsersMusic.json[@"music"]];
+}];
+[self.queue addOperation:go];

@@ -1,0 +1,38 @@
++ (NSError*) checkOnServerAndOtherError:(BO*)op apiMethodCompletion:(nullable void(^)(id value, BO* op))completion
+{
+    if (op.json[@"error"])
+    {        
+        if ([op.json[@"error"][@"error_code"] integerValue] == 401)
+        {
+         
+           // ⚠️ Prohibit unblocking thread if the operation completed with a '401' code
+           if (op.isSync) { op.isMayUnlockSemaphore = NO; }
+           
+            // Postponing the operation
+            [BO postponeOperation:op];
+            
+            // We start the process of authentication or obtaining a fresh token
+            [APIManager authenticationProcess:^(NSError * _Nullable error) {
+  
+  				// If an error occurs while receiving the token
+                if (error) 
+                {
+                   // Then we need to call the 'completion' blocks to notify the user about the error.
+                   if (completion) completion(nil,op);
+                
+                    for (BO* postponedOp in RXNO_BaseOperation.postponedOperations)
+                    {
+                        if ((![postponedOp isEqual:op]) && (postponedOp.completion)){
+                               postponedOp.completion(postponedOp, error);
+                        }
+                    }
+                }
+                
+            }];
+            return [NSError initWithMsg:@"401 User authorization failed"];
+        }else {
+          // handle other error...
+        }
+    } 
+    return op.error;
+}

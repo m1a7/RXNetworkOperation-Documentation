@@ -1,0 +1,14 @@
+
+
+
+NSString* url = @"https://jsonplaceholder.typicode.com/comments";
+
+[[DTO GET:url completion:^(DTO * _Nonnull op, NSError * _Nullable error) {
+    
+    if (op.state == RXNO_SuccessFinished){
+        NSLog(@"JSON: %@",op.json);
+    }
+    else if (op.state == RXNO_FailiedFinished){
+        NSLog(@"Error: %@",error);
+    }
+}] retainOperationAndStart];

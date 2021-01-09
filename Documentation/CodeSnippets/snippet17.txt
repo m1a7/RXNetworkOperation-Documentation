@@ -1,0 +1,25 @@
+
+
+- (void) viewDidLoad
+{
+    GO* go = 
+    [GO groupOperation:^(GO * _Nonnull groupOp) {
+        
+        DTO* friendsOp = [[friendListForUserID:.. completion:nil] syncStart];
+        
+        NSArray<Friend*>friends = friendsOp.result;
+        ...    
+    }];
+}
+
++ (DTO*) friendListForUserID:(nullable NSString*)ownerID
+                  completion:(void(^)(NSArray<Friend*>* _Nullable friends, BO* op))completion
+{
+    DTO* netOp =
+    [DTO GET:... completion:^(DTO * _Nonnull op, NSError * _Nullable error) {
+        ..
+        op.result = @[friend1,friend2,...];
+        op.resultClass = @"NSArray";
+    }];
+    return netOp;
+}

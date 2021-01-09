@@ -1,0 +1,24 @@
+
+NSString* url = @"https://httpbin.org/post";
+
+[[DO GET:url progress:^(DO* _Nonnull op, DODownProgress p) {
+    NSLog(@"progress downloading: %f",p.percentProgress);
+    
+} completion:^(DO* _Nonnull op, NSError* _Nullable error) {
+    
+    if (op.state == RXNO_SuccessFinished)
+    {
+        NSData *data = [NSData dataWithContentsOfURL:op.locationFile];
+        if (!data) return;
+        NSString* nameOfLastItemInPath  = [[Helper divorcePathOnArray:op.url bySymbol:@"/"] lastObject];
+        NSString  *pathToDocuments      = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+        NSString* pathToWritingFile     = [pathToDocuments stringByAppendingPathComponent:nameOfLastItemInPath];
+        
+        NSError* errorWriting;
+        BOOL isSuccess = [FCFileManager writeFileAtPath:pathToWritingFile content:data error:&errorWriting];
+        if (errorWriting) return;
+        NSLog(@"Is successed written on disk: %@",(isSuccess) ? @"YES" : @"NO");
+    }else {
+        NSLog(@"Downloading failed %@",error);
+    }
+}] retainOperationAndStart];

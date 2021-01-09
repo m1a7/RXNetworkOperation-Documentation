@@ -1,0 +1,29 @@
+
+
+1. Conform protocol <NSCoder>
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    //Encode properties, other class variables, etc
+    [encoder encodeObject:self.name forKey:@"name"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if((self = [super init])) {
+        //decode properties, other class vars
+        self.name = [decoder decodeObjectForKey:@"name"];
+    }
+    return self;
+}
+
+//--------------------------------------------------------//
+
+NSString*  url = @"https://httpbin.org/post";
+Car*       car = [Car new];
+NSData* binary = [NSKeyedArchiver archivedDataWithRootObject:car];
+
+[[UO uploadTo:url data:binary completion:^(UO * _Nonnull op, NSError * _Nullable error) {
+    
+    if (op.state == RXNO_SuccessFinished){
+        NSLog(@"Object successed uploaded!");
+    }
+}] retainOperationAndStart];

@@ -1,0 +1,27 @@
+@interface ViewController : UIViewController
+
+@property (nonatomic, strong) DTO* sendUserDataOp;
+@property (nonatomic, strong) NSOperationQueue* queue;
+
+@end
+
+
+
+- (IBAction)sendUserDataAction:(UIButton *)sender
+{
+    
+    if ([self.sendUserDataOp isExpiredDelayAfterExecution]){
+        return;
+    }
+    
+    if (![self.getPhotosOp isWorkingOrInProcess]){
+        
+        self.sendUserDataOp =
+        [DTO GET:url completion:^(DTO* _Nonnull op, NSError * _Nullable error){
+            ...
+        }];
+        
+        self.sendUserDataOp.timeLimitBetweenRunsOperations = 1.5;
+        [self.queue addOperation:self.sendUserDataOp];
+    }
+}

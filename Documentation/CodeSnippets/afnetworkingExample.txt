@@ -1,0 +1,73 @@
+- (void) asyncJSON
+{
+    NSString* uri = @"https://jsonplaceholder.typicode.com/comments";
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    configuration.timeoutIntervalForRequest  = 5;
+    configuration.timeoutIntervalForResource = 1000;
+    configuration.URLCredentialStorage = [NSURLCredentialStorage sharedCredentialStorage];
+    configuration.discretionary        = YES;
+    if (@available(macOS 10.13.1, iOS 11, *)) {
+        configuration.waitsForConnectivity = YES;
+    }
+    AFURLSessionManager*      manager            = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    AFHTTPResponseSerializer* responseSerializer = [AFHTTPResponseSerializer serializer];
+    responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", @"text/plain", @"application/json", nil];
+    manager.responseSerializer = responseSerializer;
+    
+    NSURL *URL = [NSURL URLWithString:uri];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLSessionDataTask *dataTask =
+    [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSError *parseError = nil;
+            NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&parseError];
+            NSLog(@"%@",responseDictionary);
+        }
+    }];
+    [dataTask resume];
+}
+
+
+- (void)syncJSON
+{
+    NSString* uri =  @"https://jsonplaceholder.typicode.com/comments";
+
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    configuration.timeoutIntervalForRequest  = 5;
+    configuration.timeoutIntervalForResource = 1000;
+    configuration.URLCredentialStorage = [NSURLCredentialStorage sharedCredentialStorage];
+    configuration.discretionary        = YES;
+    if (@available(macOS 10.13.1, iOS 11, *)) {
+        configuration.waitsForConnectivity = YES;
+    }
+    
+    AFURLSessionManager*      manager            = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    AFHTTPResponseSerializer* responseSerializer = [AFHTTPResponseSerializer serializer];
+    responseSerializer.acceptableContentTypes    = [NSSet setWithObjects:@"text/html", @"text/plain", @"application/json", nil];
+    manager.responseSerializer                   = responseSerializer;
+    
+    NSURL *URL = [NSURL URLWithString:uri];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request setHTTPMethod:@"GET"];
+    
+    manager.completionQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block NSData* data;
+    
+    NSURLSessionDataTask *dataTask =
+    [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        data = responseObject;
+        dispatch_semaphore_signal(semaphore);
+    }];
+    [dataTask resume];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    NSError *parseError = nil;
+    NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+    NSLog(@"MY JSON: %@",responseDictionary);
+}

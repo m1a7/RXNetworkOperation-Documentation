@@ -1,0 +1,18 @@
+
+
+NSString*     url       = @"https://httpbin.org/post";
+NSData*       imageData = UIImagePNGRepresentation([UIImage imageNamed:@"logo"]);
+NSString*     base64Str = [imageData base64EncodedStringWithOptions:0];
+NSDictionary* params    = @{ @"imageCodedToBase64" : base64Str };
+
+[[UO uploadTo:url params:params  progress:^(UO* _Nonnull op, UOUpProgress p) {
+    NSLog(@"progress uploading: %f",p.percentProgress);
+
+} completion:^(UO * _Nonnull op, NSError * _Nullable error) {
+       
+       if (op.state == RXNO_SuccessFinished){
+           NSLog(@"Image successed uploaded!");
+       }else {
+           NSLog(@"error: %@",error);
+       }
+}] retainOperationAndStart];

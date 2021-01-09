@@ -1,0 +1,12 @@
+
+
+NSString* imgURL = @"https://sun9-69.userapi.com/c543109/v543109969/2fd87/UVRT5x9dSGM.jpg";
+
+[[DTO GET:imgURL downloadProgress:^(DTO * _Nonnull op, DTODownProgress p) {
+    NSLog(@"progress downloading: %f",p.percentProgress);
+}completion:^(DTO * _Nonnull op, NSError * _Nullable error) {
+    if (op.state == RXNO_SuccessFinished){
+        UIImage* image = [UIImage imageWithData:op.receivedData];
+        NSLog(@"image %@",image);
+    }
+}] retainOperationAndStart];

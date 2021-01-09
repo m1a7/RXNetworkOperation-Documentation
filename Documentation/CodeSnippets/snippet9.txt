@@ -1,0 +1,21 @@
+
+
+
+
+
+- (void) viewDidLoad
+{
+    DTO* op = 
+    [DTO GET:url completion:^(DTO * _Nonnull op, NSError * _Nullable error){
+        ...
+    }];
+    op.owner = [BO addressInMemory:self];
+    
+    [APIManager.queue addOperation:op];
+}
+
+
+ - (void)dealloc
+ { 
+    [BO cancelAllNetworkOperationsByEqualToString:[BO addressInMemory:self] inQueue:APIManager.queue];
+ }

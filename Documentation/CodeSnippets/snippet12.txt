@@ -1,0 +1,50 @@
+
+
+
++ (void) receiveTokenFromWebViewAuth:(nullable Token*)token error:(nullable NSError*)error
+{
+    // ⚠️ Remember, if the token was not received for any reason, then synchronous operations 
+    // are able to indefinitely hold the thread from which they were called.
+   
+    // To avoid 'deadlocks' handle cases of unsuccessful receipt of a new token.
+    // In this case, call the '-unlockSemaphore' methods on synchronous operations
+    if (error){
+        for (BO* op in RXNO_BaseOperation.postponedOperations) {
+             op.isMayUnlockSemaphore = YES;
+             op.error = userInfoError;
+        }
+        // Unblocking previously frozen threads
+        [BO unlockSemaphoreForAllPostponned];
+
+        if (APIManager.authenticationCompletion) APIManager.authenticationCompletion(error);
+
+        // We delete all postponned operations.
+        [BO removeAllPostponedOperations];
+        APIManager.isOpenAuthenticationProcess = NO;
+        return;
+    }
+    
+    // ✅  Below is the case of successful response of a fresh token.
+    [APIManager saveTokenInKeychain:token];
+    
+    // Call the method for executing pending operations.
+    // We insert a fresh token into parameters of each operation that was completed with error.
+    [BO performPostponedOperationsOnQueue:APIManager.aSyncQueue
+                     updateOperationBlock:^NSArray<BO*>* (NSArray<BO*>* rawOperations) {
+
+       for (int i=0; i<=rawOperations.count-1; i++)
+       {
+           BO* op = rawOperations[i];
+           modifyOperation block =
+           RXNO_BaseOperation.modificationBlocksForPostponedOperations[op.uniqueHash];
+
+           if (block){
+               op = block(op);
+           }else {
+               op.parameters[@"access_token"] = APIManager.token.access_token;
+           }
+       }
+       return rawOperations;
+   }];
+   
+}
