@@ -507,7 +507,7 @@ To write files from temporary directories to permanent ones, it is recommended t
 
 ## Additionally <a name="paragraph29"></a>
 
-[🇷🇺  Russian Readme](https://github.com/m1a7/RXNetworkOperation/README(RU).md)<br>
+[🇷🇺  Russian Readme](README(RU).md)<br>
 
 ## Author <a name="paragraph30"></a>
 
